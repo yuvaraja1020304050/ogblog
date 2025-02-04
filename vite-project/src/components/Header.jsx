@@ -1,6 +1,6 @@
 import React from 'react'
 import { FaBars ,FaQuestionCircle,FaTh,FaStar } from 'react-icons/fa'
-import logo from './assets/blogger-logo.avif';
+import logo from '../assets/blogger-logo.avif';
 
 const Header = () => {
   return (
@@ -14,7 +14,7 @@ const Header = () => {
         <input type='text' className='border-2 h-12 m-2 w-80 rounded-full' placeholder='   Search post'/>
         <div className='flex gap-6'>
         <button 
-           className="m-2 p-2 bg-blue-500 text-white rounded-full h-10 m-3 hover:bg-blue-600">
+           className="m-3 p-2 bg-blue-500 text-white rounded-full h-10  hover:bg-blue-600">
       <FaQuestionCircle size={24} />  
       </button>
       <button
