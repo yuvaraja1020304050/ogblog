@@ -11,8 +11,8 @@ const Header = () => {
         </button>
         <img src={logo} className='h-8 m-4'  alt="not shown"/>
         </div>
-        <input type='text' className='border-2 h-12 m-2 w-80 rounded-full' placeholder='   Search post'/>
-        <div className='flex gap-6'>
+        <input type='text' className='border-2 h-12 m-2 ml-80 w-100 rounded-full' placeholder='   Search post'/>
+        <div className='ml-18 flex gap-6'>
         <button 
            className="m-3 p-2 bg-blue-500 text-white rounded-full h-10  hover:bg-blue-600">
       <FaQuestionCircle size={24} />  
