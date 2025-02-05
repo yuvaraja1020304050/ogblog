@@ -1,8 +1,13 @@
 import React from 'react'
 import { FaBars ,FaQuestionCircle,FaTh,FaStar } from 'react-icons/fa'
 import logo from '../assets/blogger-logo.avif';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const navigate=useNavigate()
+  function handlebutton(){
+    navigate('/')
+  }
   return (
     <div className='h-16 w-full bg-white border-y border-gray-400 flex  justify-between'>
         <div className='flex'>
@@ -11,6 +16,7 @@ const Header = () => {
         </button>
         <img src={logo} className='h-8 m-4'  alt="not shown"/>
         </div>
+        <button className='text-3xl' onClick={handlebutton}>🏠</button>
         <input type='text' className='border-2 h-12 m-2 ml-80 w-100 rounded-full' placeholder='   Search post'/>
         <div className='ml-18 flex gap-6'>
         <button 

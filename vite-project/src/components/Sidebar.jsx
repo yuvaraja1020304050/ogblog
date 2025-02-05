@@ -4,7 +4,7 @@ const Sidebar = () => {
   const navigate=useNavigate();
   function handleCreate(){
     console.log("from sidebar")
-    navigate('/')
+    navigate('/create')
   }
   function handleRead(){
     navigate('/Read')
@@ -15,10 +15,16 @@ const Sidebar = () => {
         <hr></hr>
         <div>
             <button className='rounded-full border-2 my-8 mx-13 w-40 h-10' onClick={handleRead} >🔍Explore</button>
-            <button className='rounded-full border-2 my-6 mx-13 w-40 h-10'>📒MY POSTS</button>
-            <button className='rounded-full border-2 my-6 mx-13 w-40 h-10'>📃UPDate</button>
-            <button className='rounded-full border-2 my-6 mx-13 w-40 h-10'>🗑️Delete</button>
-            <button className='rounded-full border-2 my-6 mx-13 w-40 h-10'>🪟View</button>
+           
+            <button className='rounded-full border-2 my-6 mx-13 w-40 h-10' onClick={()=>{
+              navigate('ABOUT')
+            }}>📃ABOUT</button>
+            <button className='rounded-full border-2 my-6 mx-13 w-40 h-10' 
+             
+            >🗑️HISTORY</button>
+            <button className='rounded-full border-2 my-6 mx-13 w-40 h-10' onClick={()=>{
+              navigate('/Contact')
+            }}>🪟Contact</button>
         </div>
     </div>
   )

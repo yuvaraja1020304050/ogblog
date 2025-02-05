@@ -30,8 +30,9 @@ const Create = () => {
       'id':Date.now()
     }
     console.log(creative);
-    seterror('done')
-    setstore((prevStore) => {const addstore=[...prevStore, creative]
+    seterror('saved !!! click ok to continue')
+    setstore((prevStore) => {
+      const addstore=[...prevStore, creative]
       localStorage.setItem('store', JSON.stringify(addstore));
       return addstore
     });
@@ -44,14 +45,12 @@ const Create = () => {
 
 
   }
-  function handleEvent(){
-    seterror("");
-  }
+ 
 
   return (
     
    
-         <div className='h-140 border-3 w-140 mx-60 my-20 '>
+         <div className='h-150 border-3 w-140 mx-100 my-20 rounded-md'>
          <div className='flex flex-col gap-8 mt-2'>
           <h1 className='font-bold text-blue-800 ml-40 underline'>Create your own blog</h1>
           <div className='flex gap-6 ml-2'>
@@ -68,7 +67,7 @@ const Create = () => {
           </div>
           <div className='flex gap-6 ml-2'>
           <h3 >write blog</h3>
-          <input className='border-2 rounded-full w-90 ml-2' type="text"  onChange={(e)=>setblog(e.target.value)} value={blog}  placeholder="    enter the full content "/>
+          <input className='border-2 rounded-full w-90 ml-6' type="text"  onChange={(e)=>setblog(e.target.value)} value={blog}  placeholder="    enter the full content "/>
           </div>
           <div className='flex gap-2 '>
           <h3 className='pl-1'>Images for blog:</h3>
