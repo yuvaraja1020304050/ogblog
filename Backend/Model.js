@@ -7,6 +7,7 @@
       'id':Date.now() */
       const mongoose=require('mongoose');
       const schema=new mongoose.Schema({
+        
         title:{
             type:String
         },
@@ -19,10 +20,10 @@
         blog:{
             type:String
         },
-        reference:{
+        image:{
             type:String
         },
-        id:{
+        reference:{
             type:String
         }
       })

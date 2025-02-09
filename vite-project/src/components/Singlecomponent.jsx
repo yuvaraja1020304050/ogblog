@@ -1,64 +1,97 @@
 import React, { useState, useEffect } from 'react';
-import { useParams ,Link} from 'react-router-dom';
-import logo from '../assets/2.jpg'
+import { useParams, Link } from 'react-router-dom';
 
 const Singlecomponent = () => {
     const { id } = useParams();
-    const [onepage, setOnePage] = useState({});
+    console.log("Page ID:", id);
+
+    const [onepage, setOnePage] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const data = JSON.parse(localStorage.getItem('store'));
-
-        const value = data.find((h) => h.id == id);
-        console.log(id);
-        if (value) {
-            setOnePage(value);  
-        }
+        const fetchBlog = async () => {
+            try {
+                const response = await fetch(`http://localhost:3000/Read/${id}`); // Make sure API is correct
+                if (!response.ok) {
+                    throw new Error("Failed to fetch blog data.");
+                }
+                const data = await response.json();
+                setOnePage(data);
+                console.log("Fetched Blog Data:", data); // Debugging
+            } catch (err) {
+                console.error("Error fetching blog:", err);
+                setError("Blog not found or an error occurred.");
+            }
+        };
+        fetchBlog();
     }, [id]);
 
+    if (error) {
+        return <h2 className="text-center text-red-500">{error}</h2>;
+    }
+
+    if (!onepage) {
+        return <h2 className="text-center text-gray-500">Loading...</h2>;
+    }
+
     return (
-      <div className="blog-container ml-3 border-5 mt-3">
-        {onepage ? (
-          <>
-            <h1 className='text-4xl ml-40'>{onepage.title}</h1>
-            <p><strong>Created at:</strong> {new Date(onepage.id).toLocaleDateString()}</p>
-            <div className="blog-description">
-              <p>{onepage.description}</p>
+        <div className="p-6 border rounded-lg shadow-lg bg-white mx-auto max-w-4xl mt-6">
+            {/* Title */}
+            <h1 className="text-4xl font-bold text-center text-blue-700">{onepage.title || "No Title"}</h1>
+            <p className="text-sm text-gray-500 text-center mt-2">Created at: {onepage.id || "Unknown"}</p>
+
+            {/* Blog Image & Content */}
+            <div className="flex flex-col md:flex-row gap-6 mt-6">
+                {onepage.image ? (
+                    <img 
+                        className="w-60 rounded-lg shadow-md" 
+                        src={onepage.image} 
+                        alt={onepage.title || "No Title"} 
+                        loading="lazy" 
+                    />
+                ) : (
+                    <p className="text-gray-500 italic">No image available</p>
+                )}
+                
+                <div>
+                    <p className="text-gray-700">{onepage.description || "No description available"}</p>
+                    <p className="mt-2 text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit...</p>
+                </div>
             </div>
-            <div className='flex justify-between gap-4'>
-              <img  className='w-60' src={onepage.image} alt={onepage.title} />
-              <div>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus fugiat illo dolore omnis modi voluptas atque facilis, veritatis odit totam incidunt velit nihil minima delectus! Expedita praesentium porro fugit quasi.</p>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus fugiat illo dolore omnis modi voluptas atque facilis, veritatis odit totam incidunt velit nihil minima delectus! Expedita praesentium porro fugit quasi.</p>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus fugiat illo dolore omnis modi voluptas atque facilis, veritatis odit totam incidunt velit nihil minima delectus! Expedita praesentium porro fugit quasi.</p>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus fugiat illo dolore omnis modi voluptas atque facilis, veritatis odit totam incidunt velit nihil minima delectus! Expedita praesentium porro fugit quasi.</p>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus fugiat illo dolore omnis modi voluptas atque facilis, veritatis odit totam incidunt velit nihil minima delectus! Expedita praesentium porro fugit quasi.</p>
-              </div>
+
+            {/* Reference Link */}
+            {onepage.reference && (
+                <a 
+                    href={onepage.reference} 
+                    className="text-blue-600 underline block mt-4"
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                >
+                    Reference: {onepage.reference}
+                </a>
+            )}
+
+            {/* Blog Content */}
+            <h2 className="font-bold text-lg mt-4">The Blog Content:</h2>
+            <p className="text-gray-700">{onepage.blog || "No content available"}</p>
+
+            {/* Actions */}
+            <div className="mt-6 flex gap-4">
+                <Link className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-700 transition" to={`/update/${onepage._id}`}>
+                    Update
+                </Link>
+                <Link className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-700 transition" to={`/delete/${onepage._id}`}>
+                    Delete
+                </Link>
             </div>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus fugiat illo dolore omnis modi voluptas atque facilis, veritatis odit totam incidunt velit nihil minima delectus! Expedita praesentium porro fugit quasi.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus fugiat illo dolore omnis modi voluptas atque facilis, veritatis odit totam incidunt velit nihil minima delectus! Expedita praesentium porro fugit quasi.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus fugiat illo dolore omnis modi voluptas atque facilis, veritatis odit totam incidunt velit nihil minima delectus! Expedita praesentium porro fugit quasi.</p>
 
-
-            <a href={onepage.refrence} className='underline' target="_blank" rel="noopener noreferrer">
-  Reference: Go to Google Search for Messi
-</a>
-
-
-            <h2 className='font-bold'>the blog main content:</h2>
-            <p>{onepage.blog}</p>
-            <div className='ml-150 mt-25 flex gap-29'>
-                <Link className='mb-2 border-2 w-15 rounded-full p-1 bg-blue-300 hover:bg-blue-700' to={`/update/${onepage.id}`}>Update</Link>
-                <Link className='mb-2 border-2 w-15 rounded-full p-1 bg-red-300 hover:bg-red-700' to={`/delete/${onepage.id}`}>Delete</Link>
-            </div>
-            <input type="textarea" className='border-2'/>
-            
-          </>
-        ) : (
-          <p>Not having like this...</p>
-        )}
-      </div>
+            {/* Comment Box */}
+            <textarea 
+                className="border-2 w-full mt-6 p-3 rounded-md focus:ring focus:ring-blue-300" 
+                placeholder="Leave a comment..."
+            />
+        </div>
     );
-}
+};
 
 export default Singlecomponent;

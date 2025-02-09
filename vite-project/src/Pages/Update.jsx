@@ -1,156 +1,114 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { createtheblog } from '../App'; 
 
 const Update = () => {
   const { id } = useParams();
-  const { store, setstore } = useContext(createtheblog); 
   const navigate = useNavigate(); 
+console.log(id);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    authorname: '',
+    blog: '',
+    image: '',
+    reference: '',
+  });
 
-  const [title, settitle] = useState('');
-  const [description, setdescription] = useState('');
-  const [authorname, setauthorname] = useState('');
-  const [blog, setblog] = useState('');
-  const [image, setimages] = useState('');
-  const [reference, setreference] = useState('');
-  const [error, seterror] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
-   
-    if (store && id) {
-      const data = store.find((val) => val.id === Number(id));
-      
-      
-      if (data) {
-        settitle(data.title);
-        setdescription(data.description);
-        setauthorname(data.authorname);
-        setblog(data.blog);
-        setimages(data.image);
-        setreference(data.reference);
-      } else {
-        seterror('Blog not found!');
+    const fetchBlog = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/read/${id}`);
+        if (!response.ok) throw new Error('Failed to fetch');
+        
+        const data = await response.json();
+        setFormData(data);
+      } catch (err) {
+        setError('Blog not found!');
+      } finally {
+        setLoading(false);
       }
-    }
-  }, [id, store]);
-
-  const handleSubmit = () => {
-    if (!title) {
-      seterror('Title is not filled!');
-      return;
-    }
-    if (!description) {
-      seterror('Description is not filled!');
-      return;
-    }
-
-    
-    const updatedBlog = {
-      title,
-      description,
-      authorname,
-      blog,
-      image,
-      reference,
-      id: Number(id), 
     };
+    fetchBlog();
+  }, [id]);
 
-    const updatedStore = store.map((val) =>
-      val.id === Number(id) ? updatedBlog : val
-    );
-
-
-    setstore(updatedStore);
-
-    
-    localStorage.setItem('store', JSON.stringify(updatedStore));
-
-   
-    settitle('');
-    setdescription('');
-    setauthorname('');
-    setblog('');
-    setimages('');
-    setreference('');
-    seterror('');
-
-    
-    navigate('/Read');
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.title || !formData.description || !formData.authorname) {
+      setError('Title, Description, and Author Name are required!');
+      return;
+    }
+
+    setUpdating(true);
+    try {
+      const response = await fetch(`http://localhost:3000/update/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) throw new Error('Failed to update');
+
+      navigate('/Read');
+    } catch (err) {
+      setError('Update failed!');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  if (loading) {
+    return <h2 className="text-center text-gray-500">Loading...</h2>;
+  }
+
   return (
-    <div className=" h-150 w-150 border-2 ml-100 mt-10">
-      <h1 className="title underline ml-50">Update Your Blog</h1>
-      {error && <div className="error-message">{error}</div>}
-      
-      <div className="input-group">
-        <label>Enter Title:</label>
-        <input
-          type="text"
-          value={title}
-          className=' ml-17 border-2 w-80'
-          onChange={(e) => settitle(e.target.value)}
-          placeholder="Enter the title"
-        />
-      </div>
+    <div className="max-w-2xl mx-auto mt-10 p-6 border rounded-lg shadow-lg bg-white">
+      <h1 className="text-2xl font-bold text-center text-blue-700 underline mb-4">Update Your Blog</h1>
+      {error && <div className="text-red-500 text-center mb-4">{error}</div>}
 
-      <div className="input-group">
-        <label>Enter Description:</label>
-        <textarea
-          value={description}
-           className=' mt-8 ml-4 border-2 w-80'
-          onChange={(e) => setdescription(e.target.value)}
-          placeholder="Enter the description"
-        />
-      </div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block font-semibold">Enter Title:</label>
+          <input type="text" name="title" value={formData.title} className="border w-full p-2 rounded-md focus:ring focus:ring-blue-300" onChange={handleChange} placeholder="Enter the title" />
+        </div>
 
-      <div className="input-group">
-        <label>Author Name:</label>
-        <input
-          type="text"
-          value={authorname}
-          className=' ml-17 border-2 w-80 mt-5'
-          onChange={(e) => setauthorname(e.target.value)}
-          placeholder="Enter the author's name"
-        />
-      </div>
+        <div>
+          <label className="block font-semibold">Enter Description:</label>
+          <textarea name="description" value={formData.description} className="border w-full p-2 rounded-md focus:ring focus:ring-blue-300" onChange={handleChange} placeholder="Enter the description" />
+        </div>
 
-      <div className="input-group">
-        <label>Write Blog:</label>
-        <input
-          type="text"
-          className=' ml-17 border-2 w-80 mt-5'
-          value={blog}
-          onChange={(e) => setblog(e.target.value)}
-          placeholder="Enter the full content"
-        />
-      </div>
+        <div>
+          <label className="block font-semibold">Author Name:</label>
+          <input type="text" name="authorname" value={formData.authorname} className="border w-full p-2 rounded-md focus:ring focus:ring-blue-300" onChange={handleChange} placeholder="Enter the author's name" />
+        </div>
 
-      <div className="input-group">
-        <label>Images for Blog:</label>
-        <input
-          type="text"
-          value={image}
-          className=' ml-17 border-2 w-80 mt-5'
-          onChange={(e) => setimages(e.target.value)}
-          placeholder="Provide image URL"
-        />
-      </div>
+        <div>
+          <label className="block font-semibold">Write Blog:</label>
+          <textarea name="blog" className="border w-full p-2 rounded-md focus:ring focus:ring-blue-300" value={formData.blog} onChange={handleChange} placeholder="Enter the full content" />
+        </div>
 
-      <div className="input-group">
-        <label>Reference:</label>
-        <input
-          type="text"
-          value={reference}
-          className=' ml-17 border-2 w-80 mt-5'
-          onChange={(e) => setreference(e.target.value)}
-          placeholder="Enter the reference URL"
-        />
-      </div>
+        <div>
+          <label className="block font-semibold">Image URL:</label>
+          <input type="text" name="image" value={formData.image} className="border w-full p-2 rounded-md focus:ring focus:ring-blue-300" onChange={handleChange} placeholder="Provide image URL" />
+        </div>
 
-      <button className="submit-button bg-green-300 hover:bg-green-500 rounded-full p-2 ml-70 mt-30" onClick={handleSubmit}>
-        Update
-      </button>
+        <div>
+          <label className="block font-semibold">Reference:</label>
+          <input type="text" name="reference" value={formData.reference} className="border w-full p-2 rounded-md focus:ring focus:ring-blue-300" onChange={handleChange} placeholder="Enter the reference URL" />
+        </div>
+
+        <button type="submit" className={`w-full py-2 rounded-full text-white transition ${updating ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-700'}`} disabled={updating}>
+          {updating ? 'Updating...' : 'Update'}
+        </button>
+      </form>
     </div>
   );
 };

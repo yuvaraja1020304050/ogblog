@@ -4,31 +4,37 @@ import Footer from './components/Footer';
 import Body from './components/Body';
 import Sidebar from './components/Sidebar';
 
-export const createtheblog = createContext();
+export const BlogContext = createContext();
 
 function App() {
- 
-  const [store, setstore] = useState(() => {
-    const storedData = localStorage.getItem('store');
-    return storedData ? JSON.parse(storedData) : []; 
-  });
+  const [store, setStore] = useState([]);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/Read');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        setStore(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
     
-    if (store.length > 0) {
-      localStorage.setItem('store', JSON.stringify(store));
-    }
-  }, [store]);
+    fetchData();
+  }, []);
 
   return (
-    <createtheblog.Provider value={{ store, setstore }}>
+    <BlogContext.Provider value={{ store, setStore }}>
       <Header />
-      <div className='flex w-screen bg-green-100 h-240'>
+      <div className='flex w-screen bg-green-100 h-screen'>
         <Sidebar />
         <Body />
       </div>
       <Footer />
-    </createtheblog.Provider>
+    </BlogContext.Provider>
   );
 }
 

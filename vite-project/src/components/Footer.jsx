@@ -1,13 +1,28 @@
-import React from 'react'
+import React from 'react';
 
 const Footer = () => {
   return (
-    <div className='h-15 flex justify-evenly bg-blue-100'>
-        <div>📲follow us on facebook <a href="http://facebook.com/"><span className='underline'>link</span>l</a></div>
-        <div>📲follow us on instagram <a href="http://facebook.com/"><span className='underline'>link</span>l</a></div>
-        <div>📲follow us on twitter <a href="http://facebook.com/"><span className='underline'>link</span>l</a></div>
+    <div className="mt-30 h-20 flex flex-wrap justify-center items-center gap-6 bg-blue-100 p-4">
+      <div>
+        📲 Follow us on Facebook:{' '}
+        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="underline text-blue-600 hover:text-blue-800">
+          Link
+        </a>
+      </div>
+      <div>
+        📲 Follow us on Instagram:{' '}
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="underline text-pink-600 hover:text-pink-800">
+          Link
+        </a>
+      </div>
+      <div>
+        📲 Follow us on Twitter (X):{' '}
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="underline text-blue-400 hover:text-blue-600">
+          Link
+        </a>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;
